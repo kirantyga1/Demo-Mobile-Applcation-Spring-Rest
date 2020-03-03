@@ -34,6 +34,11 @@ public class UserController {
 
 			MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<User> getUsers(@PathVariable String userId) {
+		String firstName = null;
+		//
+		//
+		int firstNameLength = firstName.length();
+		
 		if (users.containsKey(userId)) {
 			return new ResponseEntity<>(users.get(userId), HttpStatus.OK);
 		} else {
@@ -82,8 +87,12 @@ public class UserController {
 		return storeUserDetails;
 	}
 
-	@DeleteMapping
-	public String deleteUsers() {
-		return "deleteUsers called";
+	@DeleteMapping(path = "/{userId}")
+	public ResponseEntity deleteUsers(@PathVariable String userId) {
+		User storeUserDetails = users.get(userId);
+
+		users.remove(userId);
+
+		return ResponseEntity.noContent().build();
 	}
 }
