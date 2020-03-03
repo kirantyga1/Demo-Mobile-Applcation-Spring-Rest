@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mobileapp.ws.demo.mobile.app.ws.model.UpdateUserDetails;
 import com.mobileapp.ws.demo.mobile.app.ws.model.request.UserDetailsRequestModel;
 import com.mobileapp.ws.demo.mobile.app.ws.ui.model.User;
 
@@ -28,17 +29,17 @@ import com.mobileapp.ws.demo.mobile.app.ws.ui.model.User;
 public class UserController {
 
 	Map<String, User> users;
-	
+
 	@GetMapping(path = "/{userId}", produces = {
 
 			MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<User> getUsers(@PathVariable String userId) {
-		if(users.containsKey(userId)) {
+		if (users.containsKey(userId)) {
 			return new ResponseEntity<>(users.get(userId), HttpStatus.OK);
-		}else {
+		} else {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
-		
+
 	}
 
 	@GetMapping
@@ -52,10 +53,9 @@ public class UserController {
 		return "getUsers was called with page = " + page + " and limit =" + limit + "and sort=" + sort;
 	}
 
-	@PostMapping(
-			consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE }, 
-			produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
-	
+	@PostMapping(consumes = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+
 	public ResponseEntity<User> createUsers(@Valid @RequestBody UserDetailsRequestModel userDetails) {
 		User user = new User();
 		user.setFirstName(userDetails.getFirstName());
@@ -64,14 +64,22 @@ public class UserController {
 		user.setEmail(userDetails.getPassword());
 		String userId = UUID.randomUUID().toString();
 		user.setUserId(userId);
-		if(users == null) users = new HashMap<>();
+		if (users == null)
+			users = new HashMap<>();
 		users.put(userId, user);
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 
-	@PutMapping
-	public String updateUsers() {
-		return "updateUsers called";
+	@PutMapping(path = "/{userId}", 
+			consumes = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE }, 
+			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public User updateUsers(@PathVariable String userId, @Valid @RequestBody UpdateUserDetails updateUserDetails) {
+		User storeUserDetails = users.get(userId);
+		storeUserDetails.setFirstName(updateUserDetails.getFirstName());
+		storeUserDetails.setLastName(updateUserDetails.getLastName());
+		users.put(userId, storeUserDetails);
+
+		return storeUserDetails;
 	}
 
 	@DeleteMapping
