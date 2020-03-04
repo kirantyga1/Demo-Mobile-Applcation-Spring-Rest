@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mobileapp.ws.demo.mobile.app.ws.exceptions.UserServiceException;
 import com.mobileapp.ws.demo.mobile.app.ws.model.UpdateUserDetails;
 import com.mobileapp.ws.demo.mobile.app.ws.model.request.UserDetailsRequestModel;
 import com.mobileapp.ws.demo.mobile.app.ws.ui.model.User;
@@ -30,14 +31,12 @@ public class UserController {
 
 	Map<String, User> users;
 
+	@SuppressWarnings("unused")
 	@GetMapping(path = "/{userId}", produces = {
 
 			MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<User> getUsers(@PathVariable String userId) {
-		String firstName = null;
-		//
-		//
-		int firstNameLength = firstName.length();
+	if(true) throw new UserServiceException("userServiceException thrown");
 		
 		if (users.containsKey(userId)) {
 			return new ResponseEntity<>(users.get(userId), HttpStatus.OK);
